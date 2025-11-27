@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       description,
       category,
       type,
-      tags: tags || [],
+      tags: (tags || []).map((t: string) => t.toLowerCase()),
       createdAt: new Date().toISOString(),
       userId: Buffer.from(userEmail.toLowerCase()).toString('base64'),
       userName,

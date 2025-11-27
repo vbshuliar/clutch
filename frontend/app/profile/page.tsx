@@ -106,7 +106,7 @@ function ProfilePage() {
           <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
           <button
             onClick={handleLogout}
-            className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 hover:scale-105 active:scale-95 rounded-lg transition-all"
           >
             Log out
           </button>
@@ -144,7 +144,7 @@ function ProfilePage() {
       <div className="max-w-2xl mx-auto px-4 pb-24">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-gray-900">My Listings</h3>
-          <Link href="/add" className="text-sm text-orange-500 font-medium">
+          <Link href="/add" className="text-sm text-orange-500 font-medium hover:text-orange-600 hover:scale-105 active:scale-95 transition-all">
             + Add New
           </Link>
         </div>
@@ -165,7 +165,7 @@ function ProfilePage() {
             <p className="text-gray-500 text-sm mb-4">Share what you can offer or what you need!</p>
             <Link
               href="/add"
-              className="inline-block py-2 px-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl text-sm font-medium"
+              className="inline-block py-2 px-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl text-sm font-medium hover:from-orange-600 hover:to-amber-600 hover:scale-105 active:scale-95 transition-all"
             >
               Create Your First Listing
             </Link>
@@ -184,7 +184,7 @@ function ProfilePage() {
                   </div>
                   <button 
                     onClick={() => handleDeleteListing(listing.id)}
-                    className="p-1.5 hover:bg-red-50 active:scale-90 rounded-lg transition-all ml-2"
+                    className="p-1.5 hover:bg-red-50 hover:scale-110 active:scale-90 rounded-lg transition-all ml-2"
                     title="Delete listing"
                   >
                     <span className={`text-xl transition-transform inline-block ${

@@ -337,29 +337,19 @@ export default function AdminPage() {
                 <p className="text-sm text-orange-800 font-medium">👤 Creating listing on behalf of a user</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">User Email *</label>
-                  <input
-                    type="email"
-                    value={newListing.userEmail}
-                    onChange={(e) => handleEmailChange(e.target.value)}
-                    placeholder="user@essex.ac.uk"
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">User Name (auto-generated)</label>
-                  <input
-                    type="text"
-                    value={newListing.userName}
-                    onChange={(e) => setNewListing({ ...newListing, userName: e.target.value })}
-                    placeholder="Auto-fills from email"
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">User Email *</label>
+                <input
+                  type="email"
+                  value={newListing.userEmail}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  placeholder="user@essex.ac.uk"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                />
+                {newListing.userName && (
+                  <p className="text-xs text-gray-500 mt-1">Username: {newListing.userName}</p>
+                )}
               </div>
 
               {/* Type Selection */}

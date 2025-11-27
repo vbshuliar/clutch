@@ -127,7 +127,7 @@ function OffersPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all active:scale-95 ${
                 filter === f
                   ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:border-orange-300 active:bg-gray-50'
+                  : 'bg-white border border-gray-200 text-gray-600 hover:border-orange-300 hover:scale-105 active:bg-gray-50'
               }`}
             >
               {f === 'all' ? 'All' : f === 'skill' ? 'Skills' : 'Items'}
@@ -171,7 +171,7 @@ function OffersPage() {
                         <span className="text-xs text-gray-400">{formatDate(listing.createdAt)}</span>
                         <button
                           onClick={() => toggleSave(listing.id)}
-                          className="p-1.5 hover:bg-gray-100 active:scale-90 rounded-lg transition-all"
+                          className="p-1.5 hover:bg-gray-100 hover:scale-110 active:scale-90 rounded-lg transition-all"
                         >
                           <span className={`text-xl transition-transform ${isSaved(listing.id) ? 'scale-110' : ''}`}>
                             {isSaved(listing.id) ? '❤️' : '🤍'}

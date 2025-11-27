@@ -57,6 +57,20 @@ html {
   outline-offset: 2px;
 }
 
+/* Clickable element base styles */
+.clickable {
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: scale(1.02);
+}
+
+.clickable:active {
+  transform: scale(0.95);
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;

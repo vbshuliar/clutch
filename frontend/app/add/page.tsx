@@ -103,7 +103,7 @@ function AddListingPage() {
               <button
                 type="button"
                 onClick={() => setType('offer')}
-                className={`p-4 rounded-2xl border-2 transition-all ${
+                className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                   type === 'offer'
                     ? 'border-orange-500 bg-orange-50'
                     : 'border-gray-200 bg-white hover:border-orange-300'
@@ -118,7 +118,7 @@ function AddListingPage() {
               <button
                 type="button"
                 onClick={() => setType('request')}
-                className={`p-4 rounded-2xl border-2 transition-all ${
+                className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                   type === 'request'
                     ? 'border-rose-500 bg-rose-50'
                     : 'border-gray-200 bg-white hover:border-rose-300'
@@ -142,7 +142,7 @@ function AddListingPage() {
               <button
                 type="button"
                 onClick={() => setCategory('skill')}
-                className={`p-4 rounded-2xl border-2 transition-all ${
+                className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                   category === 'skill'
                     ? type === 'offer' ? 'border-orange-500 bg-orange-50' : 'border-rose-500 bg-rose-50'
                     : 'border-gray-200 bg-white hover:border-gray-300'
@@ -157,7 +157,7 @@ function AddListingPage() {
               <button
                 type="button"
                 onClick={() => setCategory('item')}
-                className={`p-4 rounded-2xl border-2 transition-all ${
+                className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                   category === 'item'
                     ? type === 'offer' ? 'border-amber-500 bg-amber-50' : 'border-rose-500 bg-rose-50'
                     : 'border-gray-200 bg-white hover:border-gray-300'
@@ -254,7 +254,7 @@ function AddListingPage() {
                 type="button"
                 onClick={handleAddTag}
                 disabled={!tagInput.trim() || tags.length >= 5}
-                className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 hover:scale-105 active:scale-95 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all"
               >
                 Add
               </button>
@@ -270,7 +270,7 @@ function AddListingPage() {
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(index)}
-                      className="text-orange-500 hover:text-orange-700"
+                      className="text-orange-500 hover:text-orange-700 hover:scale-125 active:scale-90 transition-all"
                     >
                       ✕
                     </button>
@@ -291,7 +291,7 @@ function AddListingPage() {
           <button
             type="submit"
             disabled={!title.trim() || !description.trim() || isSubmitting}
-            className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-orange-500/30 disabled:shadow-none"
+            className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 hover:scale-[1.02] active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all shadow-lg shadow-orange-500/30 disabled:shadow-none"
           >
             {isSubmitting ? (
               <span className="flex items-center justify-center gap-2">

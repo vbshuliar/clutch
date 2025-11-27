@@ -19,6 +19,7 @@ interface Listing {
 }
 
 function RequestsPage() {
+  const [filter, setFilter] = useState<'all' | 'skill' | 'item'>('all')
   const [listings, setListings] = useState<Listing[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -58,12 +59,14 @@ function RequestsPage() {
     return date.toLocaleDateString()
   }
 
-  const filteredListings = listings.filter(listing => 
-    !searchQuery || 
-    listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    listing.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    listing.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  )
+  const filteredListings = listings
+    .filter(listing => filter === 'all' || listing.category === filter)
+    .filter(listing => 
+      !searchQuery || 
+      listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
 
   const copyEmail = async (listing: Listing) => {
     try {
@@ -94,6 +97,25 @@ function RequestsPage() {
           placeholder="Search requests..."
           className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
         />
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="max-w-2xl mx-auto px-4 pb-4">
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {(['all', 'skill', 'item'] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all active:scale-95 ${
+                filter === f
+                  ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30'
+                  : 'bg-white border border-gray-200 text-gray-600 hover:border-orange-300 hover:scale-105 active:bg-gray-50'
+              }`}
+            >
+              {f === 'all' ? 'All' : f === 'skill' ? 'Skills' : 'Items'}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Info Banner */}
@@ -140,7 +162,7 @@ function RequestsPage() {
                         <span className="text-xs text-gray-400">{formatDate(listing.createdAt)}</span>
                         <button
                           onClick={() => toggleSave(listing.id)}
-                          className="p-1.5 hover:bg-gray-100 active:scale-90 rounded-lg transition-all"
+                          className="p-1.5 hover:bg-gray-100 hover:scale-110 active:scale-90 rounded-lg transition-all"
                         >
                           <span className={`text-xl transition-transform ${isSaved(listing.id) ? 'scale-110' : ''}`}>
                             {isSaved(listing.id) ? '❤️' : '🤍'}
