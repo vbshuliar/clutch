@@ -59,16 +59,18 @@ export default function AdminPage() {
     return localPart || ''
   }
 
-  const handleEmailChange = (email: string) => {
+  const handleUsernameChange = (username: string) => {
+    // Remove any @ symbols and whitespace
+    const cleanUsername = username.replace(/@.*$/, '').trim()
     setNewListing(prev => ({
       ...prev,
-      userEmail: email,
-      userName: generateNameFromEmail(email)
+      userEmail: cleanUsername ? `${cleanUsername}@essex.ac.uk` : '',
+      userName: cleanUsername
     }))
   }
 
-  const isValidEssexEmail = (email: string) => {
-    return email.toLowerCase().endsWith('@essex.ac.uk')
+  const getUsernameFromEmail = (email: string) => {
+    return email.split('@')[0] || ''
   }
 
   const fetchAllListings = useCallback(async () => {
@@ -351,21 +353,19 @@ export default function AdminPage() {
                 <div className="flex items-start gap-3">
                   <span className="text-xl">📧</span>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-orange-900 text-sm mb-2">User's contact email</h3>
-                    <input
-                      type="email"
-                      value={newListing.userEmail}
-                      onChange={(e) => handleEmailChange(e.target.value)}
-                      placeholder="user@essex.ac.uk"
-                      required
-                      className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all text-sm"
-                    />
-                    {newListing.userEmail && !isValidEssexEmail(newListing.userEmail) && (
-                      <p className="text-red-500 text-xs mt-1">⚠️ Must be an @essex.ac.uk email</p>
-                    )}
-                    {newListing.userName && isValidEssexEmail(newListing.userEmail) && (
-                      <p className="text-orange-600 text-xs mt-1">Username: {newListing.userName}</p>
-                    )}
+                    <h3 className="font-semibold text-orange-900 text-sm mb-2">User's Essex username</h3>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={getUsernameFromEmail(newListing.userEmail)}
+                        onChange={(e) => handleUsernameChange(e.target.value)}
+                        placeholder="e.g., ab12345"
+                        required
+                        className="flex-1 px-4 py-2.5 rounded-xl border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all text-sm"
+                      />
+                      <span className="text-orange-700 text-sm font-medium">@essex.ac.uk</span>
+                    </div>
+                    <p className="text-orange-600 text-xs mt-1">This will be their contact email</p>
                   </div>
                 </div>
               </div>
@@ -513,7 +513,7 @@ export default function AdminPage() {
                         handleAddTag()
                       }
                     }}
-                    placeholder="Add a tag..."
+                    placeholder="e.g., math, tutoring, python..."
                     disabled={tags.length >= 5}
                     className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 transition-all"
                   />
@@ -549,7 +549,7 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                disabled={!newListing.title.trim() || !newListing.description.trim() || !isValidEssexEmail(newListing.userEmail) || isSubmitting}
+                disabled={!newListing.title.trim() || !newListing.description.trim() || !newListing.userEmail.trim() || isSubmitting}
                 className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 hover:scale-[1.02] active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all shadow-lg shadow-orange-500/30 disabled:shadow-none"
               >
                 {isSubmitting ? (

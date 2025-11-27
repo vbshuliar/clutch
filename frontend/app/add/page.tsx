@@ -246,7 +246,7 @@ function AddListingPage() {
                     handleAddTag()
                   }
                 }}
-                placeholder="Add a tag..."
+                placeholder="e.g., math, tutoring, python..."
                 disabled={tags.length >= 5}
                 className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 transition-all"
               />
