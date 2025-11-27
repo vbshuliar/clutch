@@ -22,6 +22,7 @@ function ProfilePage() {
   const router = useRouter()
   const [listings, setListings] = useState<Listing[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const fetchMyListings = useCallback(async () => {
     if (!user) return
@@ -50,6 +51,7 @@ function ProfilePage() {
   }
 
   const handleDeleteListing = async (id: string) => {
+    setDeletingId(id)
     try {
       const res = await fetch(`/api/listings/${id}`, { method: 'DELETE' })
       const data = await res.json()
@@ -59,6 +61,8 @@ function ProfilePage() {
       }
     } catch (error) {
       console.error('Delete listing error:', error)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -180,10 +184,14 @@ function ProfilePage() {
                   </div>
                   <button 
                     onClick={() => handleDeleteListing(listing.id)}
-                    className="text-gray-400 hover:text-red-500 ml-2 p-1 transition-colors"
+                    className="p-1.5 hover:bg-red-50 active:scale-90 rounded-lg transition-all ml-2"
                     title="Delete listing"
                   >
-                    🗑️
+                    <span className={`text-xl transition-transform inline-block ${
+                      deletingId === listing.id ? 'scale-125 animate-pulse' : ''
+                    }`}>
+                      {deletingId === listing.id ? '💥' : '🗑️'}
+                    </span>
                   </button>
                 </div>
                 <div className="flex items-center justify-between">

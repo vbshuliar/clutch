@@ -41,13 +41,10 @@ export default function AdminPage() {
   const [message, setMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Auto-generate name from email
+  // Auto-generate name from email (use username part)
   const generateNameFromEmail = (email: string): string => {
     const localPart = email.split('@')[0]
-    if (!localPart) return ''
-    // Extract initials (first 2 chars) and format as "Student XX"
-    const initials = localPart.slice(0, 2).toUpperCase()
-    return `Student ${initials}`
+    return localPart || ''
   }
 
   const handleEmailChange = (email: string) => {

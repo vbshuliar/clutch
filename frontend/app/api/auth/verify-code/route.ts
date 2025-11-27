@@ -8,9 +8,8 @@ const secret = new TextEncoder().encode(
 )
 
 function extractNameFromEmail(email: string): string {
-  const localPart = email.split('@')[0]
-  const initials = localPart.slice(0, 2).toUpperCase()
-  return `Student ${initials}`
+  // Use email username as the name (e.g., vs22222 from vs22222@essex.ac.uk)
+  return email.split('@')[0] || ''
 }
 
 export async function POST(request: NextRequest) {
