@@ -60,8 +60,8 @@ export default function AdminPage() {
   }
 
   const handleUsernameChange = (username: string) => {
-    // Remove any @ symbols and whitespace
-    const cleanUsername = username.replace(/@.*$/, '').trim()
+    // Only allow letters and digits
+    const cleanUsername = username.replace(/[^a-zA-Z0-9]/g, '')
     setNewListing(prev => ({
       ...prev,
       userEmail: cleanUsername ? `${cleanUsername}@essex.ac.uk` : '',
@@ -320,7 +320,7 @@ export default function AdminPage() {
                       </div>
                       <p className="text-xs text-gray-400 mb-2">{listing.userEmail}</p>
                       <h2 className="font-medium text-gray-900 mb-1">{listing.title}</h2>
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-3">{listing.description}</p>
+                      <p className="text-sm text-gray-600 mb-3">{listing.description}</p>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                           listing.type === 'offer' ? 'bg-orange-100 text-orange-700' : 'bg-rose-100 text-rose-700'
@@ -365,7 +365,6 @@ export default function AdminPage() {
                       />
                       <span className="text-orange-700 text-sm font-medium">@essex.ac.uk</span>
                     </div>
-                    <p className="text-orange-600 text-xs mt-1">This will be their contact email</p>
                   </div>
                 </div>
               </div>
@@ -389,7 +388,7 @@ export default function AdminPage() {
                     <div className={`text-base font-semibold ${newListing.type === 'offer' ? 'text-orange-900' : 'text-gray-700'}`}>
                       Offer
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">Can help or share</div>
+                    <div className="text-xs text-gray-500 mt-1">I can help or share</div>
                   </button>
                   <button
                     type="button"
@@ -404,7 +403,7 @@ export default function AdminPage() {
                     <div className={`text-base font-semibold ${newListing.type === 'request' ? 'text-rose-900' : 'text-gray-700'}`}>
                       Request
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">Needs help</div>
+                    <div className="text-xs text-gray-500 mt-1">I need help</div>
                   </button>
                 </div>
               </div>
@@ -412,7 +411,7 @@ export default function AdminPage() {
               {/* Category Selection */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-3">
-                  {newListing.type === 'offer' ? 'What are they offering?' : 'What do they need?'}
+                  {newListing.type === 'offer' ? 'What are you offering?' : 'What do you need?'}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button

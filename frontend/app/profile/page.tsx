@@ -180,7 +180,7 @@ function ProfilePage() {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h2 className="font-medium text-gray-900 mb-1">{listing.title}</h2>
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">{listing.description}</p>
+                    <p className="text-sm text-gray-600 mb-3">{listing.description}</p>
                   </div>
                   <button 
                     onClick={() => handleDeleteListing(listing.id)}

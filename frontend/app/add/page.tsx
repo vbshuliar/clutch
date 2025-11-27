@@ -81,19 +81,19 @@ function AddListingPage() {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6 pb-24">
-        {/* Your Contact Info Notice */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl">
-          <div className="flex items-start gap-3">
-            <span className="text-xl">📧</span>
-            <div>
-              <h3 className="font-semibold text-orange-900 text-sm mb-1">Your contact email</h3>
-              <p className="text-orange-800 text-sm font-medium">{user?.email}</p>
-              <p className="text-orange-600 text-xs mt-1">Other students will see this to contact you.</p>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Your Contact Info Notice */}
+          <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl">
+            <div className="flex items-start gap-3">
+              <span className="text-xl">📧</span>
+              <div className="flex-1">
+                <h3 className="font-semibold text-orange-900 text-sm mb-2">Your contact email</h3>
+                <div className="px-4 py-2.5 rounded-xl border border-orange-200 bg-white text-sm text-gray-700">
+                  {user?.email}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Type Selection */}
           <div>
             <label className="block text-sm font-semibold text-gray-900 mb-3">
@@ -307,18 +307,6 @@ function AddListingPage() {
           </button>
         </form>
 
-        {/* Tips */}
-        <div className="mt-6 p-4 bg-white rounded-2xl border border-gray-100">
-          <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <span>💡</span> Tips for great listings
-          </h3>
-          <ul className="text-sm text-gray-600 space-y-1.5">
-            <li>• Be specific about what you offer and what you need</li>
-            <li>• Use clear, descriptive titles</li>
-            <li>• Mention your availability</li>
-            <li>• Be respectful and follow university policies</li>
-          </ul>
-        </div>
       </div>
 
       <BottomNav />

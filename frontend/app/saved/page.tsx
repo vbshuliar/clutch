@@ -152,7 +152,7 @@ function SavedPage() {
                       </div>
                     </div>
                     <h2 className="font-medium text-gray-900 mb-1">{listing.title}</h2>
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">{listing.description}</p>
+                    <p className="text-sm text-gray-600 mb-3">{listing.description}</p>
                     <div className="flex items-center gap-2 flex-wrap mb-3">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getCategoryColor(listing.category)}`}>
                         {getCategoryLabel(listing.category)}
