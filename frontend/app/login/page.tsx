@@ -5,12 +5,22 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 
 export default function Login() {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const { sendCode, user, isLoading } = useAuth()
   const router = useRouter()
+
+  // Only allow letters, digits, and dots (valid email characters)
+  const handleUsernameChange = (value: string) => {
+    const cleanUsername = value.replace(/[^a-zA-Z0-9.]/g, '')
+    setUsername(cleanUsername)
+  }
+
+  const getFullEmail = () => {
+    return username ? `${username}@essex.ac.uk` : ''
+  }
 
   // Redirect if already logged in
   useEffect(() => {
@@ -24,7 +34,7 @@ export default function Login() {
     setError('')
     setIsSubmitting(true)
 
-    const result = await sendCode(email)
+    const result = await sendCode(getFullEmail())
     
     if (result.success) {
       // Only show code alert in local development
@@ -80,18 +90,21 @@ export default function Login() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  University Email
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                  Essex Username
                 </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="yourname@essex.ac.uk"
-                  required
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => handleUsernameChange(e.target.value)}
+                    placeholder="e.g., ab12345"
+                    required
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                  />
+                  <span className="text-gray-500 text-sm font-medium">@essex.ac.uk</span>
+                </div>
               </div>
 
               {/* Terms Checkbox */}
@@ -116,7 +129,7 @@ export default function Login() {
 
               <button
                 type="submit"
-                disabled={isSubmitting || !email || !agreedToTerms}
+                disabled={isSubmitting || !username || !agreedToTerms}
                 className="w-full py-3.5 px-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 hover:scale-[1.02] active:scale-[0.98] active:shadow-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all shadow-lg shadow-orange-500/30"
               >
                 {isSubmitting ? (
