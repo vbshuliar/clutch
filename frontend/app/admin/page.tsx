@@ -67,6 +67,10 @@ export default function AdminPage() {
     }))
   }
 
+  const isValidEssexEmail = (email: string) => {
+    return email.toLowerCase().endsWith('@essex.ac.uk')
+  }
+
   const fetchAllListings = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/listings')
@@ -356,7 +360,10 @@ export default function AdminPage() {
                       required
                       className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all text-sm"
                     />
-                    {newListing.userName && (
+                    {newListing.userEmail && !isValidEssexEmail(newListing.userEmail) && (
+                      <p className="text-red-500 text-xs mt-1">⚠️ Must be an @essex.ac.uk email</p>
+                    )}
+                    {newListing.userName && isValidEssexEmail(newListing.userEmail) && (
                       <p className="text-orange-600 text-xs mt-1">Username: {newListing.userName}</p>
                     )}
                   </div>
@@ -542,7 +549,7 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                disabled={!newListing.title.trim() || !newListing.description.trim() || !newListing.userEmail.trim() || isSubmitting}
+                disabled={!newListing.title.trim() || !newListing.description.trim() || !isValidEssexEmail(newListing.userEmail) || isSubmitting}
                 className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 hover:scale-[1.02] active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all shadow-lg shadow-orange-500/30 disabled:shadow-none"
               >
                 {isSubmitting ? (
