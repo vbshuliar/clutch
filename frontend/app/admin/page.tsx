@@ -41,6 +41,23 @@ export default function AdminPage() {
   const [message, setMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
+  // Auto-generate name from email
+  const generateNameFromEmail = (email: string): string => {
+    const localPart = email.split('@')[0]
+    if (!localPart) return ''
+    // Extract initials (first 2 chars) and format as "Student XX"
+    const initials = localPart.slice(0, 2).toUpperCase()
+    return `Student ${initials}`
+  }
+
+  const handleEmailChange = (email: string) => {
+    setNewListing(prev => ({
+      ...prev,
+      userEmail: email,
+      userName: generateNameFromEmail(email)
+    }))
+  }
+
   const fetchAllListings = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/listings')
@@ -278,13 +295,13 @@ export default function AdminPage() {
                           <span className="text-xs text-gray-400">{formatDate(listing.createdAt)}</span>
                           <button
                             onClick={() => handleDelete(listing.id)}
-                            className={`p-1.5 rounded-lg transition-all active:scale-90 ${
-                              deletingId === listing.id
-                                ? 'bg-red-100'
-                                : 'hover:bg-red-50'
-                            }`}
+                            className="p-1.5 hover:bg-red-50 active:scale-90 rounded-lg transition-all"
                           >
-                            <span className="text-xl">🗑️</span>
+                            <span className={`text-xl transition-transform inline-block ${
+                              deletingId === listing.id ? 'scale-125 animate-pulse' : ''
+                            }`}>
+                              {deletingId === listing.id ? '💥' : '🗑️'}
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -329,21 +346,21 @@ export default function AdminPage() {
                   <input
                     type="email"
                     value={newListing.userEmail}
-                    onChange={(e) => setNewListing({ ...newListing, userEmail: e.target.value })}
+                    onChange={(e) => handleEmailChange(e.target.value)}
                     placeholder="user@essex.ac.uk"
                     required
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">User Name *</label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">User Name (auto-generated)</label>
                   <input
                     type="text"
                     value={newListing.userName}
                     onChange={(e) => setNewListing({ ...newListing, userName: e.target.value })}
-                    placeholder="John D."
+                    placeholder="Auto-fills from email"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
