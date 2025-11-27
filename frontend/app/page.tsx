@@ -44,15 +44,6 @@ function OffersPage() {
     fetchListings()
   }, [fetchListings])
 
-  // Seed database on first load if empty
-  useEffect(() => {
-    if (!isLoading && listings.length === 0) {
-      fetch('/api/seed', { method: 'POST' })
-        .then(() => fetchListings())
-        .catch(console.error)
-    }
-  }, [isLoading, listings.length, fetchListings])
-
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'skill': return 'bg-orange-100 text-orange-700'

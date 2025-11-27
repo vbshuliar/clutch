@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-
-// Reference to the same in-memory storage
-// In a real app, this would be a database
-declare global {
-  // eslint-disable-next-line no-var
-  var listingsStore: Map<string, unknown> | undefined
-}
-
-function getListings() {
-  if (!global.listingsStore) {
-    global.listingsStore = new Map()
-  }
-  return global.listingsStore
-}
+import { db } from '@/lib/db'
 
 export async function GET(
   request: NextRequest,
@@ -21,8 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const listings = getListings()
-    const listing = listings.get(id)
+    const listing = await db.getListing(id)
 
     if (!listing) {
       return NextResponse.json(
@@ -70,8 +56,7 @@ export async function DELETE(
     }
 
     const { id } = await params
-    const listings = getListings()
-    const listing = listings.get(id) as { userId: string } | undefined
+    const listing = await db.getListing(id)
 
     if (!listing) {
       return NextResponse.json(
@@ -87,7 +72,7 @@ export async function DELETE(
       )
     }
 
-    listings.delete(id)
+    await db.deleteListing(id)
 
     return NextResponse.json({ success: true })
   } catch (error) {

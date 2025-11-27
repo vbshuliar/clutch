@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-
-// Saved listings stored in cookies for simplicity
-// In production, use a database
+import { db } from '@/lib/db'
 
 export async function GET() {
   try {
@@ -16,16 +14,19 @@ export async function GET() {
       )
     }
 
-    const savedCookie = cookieStore.get('savedListings')
-    const savedIds: string[] = savedCookie ? JSON.parse(savedCookie.value) : []
+    let user
+    try {
+      user = JSON.parse(sessionCookie.value)
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Invalid session' },
+        { status: 401 }
+      )
+    }
 
-    // Fetch the actual listings from the listings API
-    const listingsRes = await fetch(new URL('/api/listings', process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'))
-    const listingsData = await listingsRes.json()
-
-    const savedListings = listingsData.success 
-      ? listingsData.listings.filter((l: { id: string }) => savedIds.includes(l.id))
-      : []
+    const savedIds = await db.getSavedIds(user.id)
+    const allListings = await db.getAllListings()
+    const savedListings = allListings.filter(l => savedIds.includes(l.id))
 
     return NextResponse.json({
       success: true,
@@ -53,6 +54,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    let user
+    try {
+      user = JSON.parse(sessionCookie.value)
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Invalid session' },
+        { status: 401 }
+      )
+    }
+
     const { listingId } = await request.json()
 
     if (!listingId) {
@@ -62,28 +73,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const savedCookie = cookieStore.get('savedListings')
-    let savedIds: string[] = savedCookie ? JSON.parse(savedCookie.value) : []
-
-    const isSaved = savedIds.includes(listingId)
-
-    if (isSaved) {
-      savedIds = savedIds.filter(id => id !== listingId)
-    } else {
-      savedIds.push(listingId)
-    }
-
-    cookieStore.set('savedListings', JSON.stringify(savedIds), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-    })
+    const isSaved = await db.toggleSaved(user.id, listingId)
 
     return NextResponse.json({
       success: true,
-      saved: !isSaved,
-      message: isSaved ? 'Listing removed from saved' : 'Listing saved',
+      saved: isSaved,
+      message: isSaved ? 'Listing saved' : 'Listing removed from saved',
     })
   } catch (error) {
     console.error('Toggle save error:', error)
