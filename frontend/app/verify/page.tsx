@@ -8,7 +8,7 @@ export default function Verify() {
   const [code, setCode] = useState(['', '', '', '', '', ''])
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { verifyCode, pendingEmail, login, user, isLoading } = useAuth()
+  const { verifyCode, pendingEmail, sendCode, user, isLoading } = useAuth()
   const router = useRouter()
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
@@ -78,7 +78,7 @@ export default function Verify() {
 
   const handleResend = async () => {
     if (pendingEmail) {
-      const result = await login(pendingEmail)
+      const result = await sendCode(pendingEmail)
       if (result.success && result.devCode) {
         alert(`🎓 Development Mode\n\nNew verification code: ${result.devCode}`)
       }

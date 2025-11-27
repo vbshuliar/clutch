@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { db, Listing } from '@/lib/db'
+import { getUser } from '@/lib/get-user'
 
 export async function GET(request: NextRequest) {
   try {
@@ -38,22 +38,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('userSession')
+    const user = await getUser()
 
-    if (!sessionCookie) {
+    if (!user) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
-        { status: 401 }
-      )
-    }
-
-    let user
-    try {
-      user = JSON.parse(sessionCookie.value)
-    } catch {
-      return NextResponse.json(
-        { success: false, error: 'Invalid session' },
         { status: 401 }
       )
     }

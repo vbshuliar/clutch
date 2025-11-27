@@ -18,6 +18,9 @@ function AddListingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
+  const TITLE_MAX = 50
+  const DESC_MAX = 200
+
   const handleAddTag = () => {
     if (tagInput.trim() && tags.length < 5) {
       setTags([...tags, tagInput.trim()])
@@ -175,14 +178,19 @@ function AddListingPage() {
 
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-semibold text-gray-900 mb-2">
-              Title
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="title" className="block text-sm font-semibold text-gray-900">
+                Title
+              </label>
+              <span className={`text-xs ${title.length > TITLE_MAX ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
+                {title.length}/{TITLE_MAX}
+              </span>
+            </div>
             <input
               id="title"
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value.slice(0, TITLE_MAX))}
               placeholder={
                 type === 'request'
                   ? 'e.g., Need Math Tutoring Help'
@@ -190,6 +198,7 @@ function AddListingPage() {
                   ? 'e.g., Math Tutoring Available'
                   : 'e.g., Extra Textbooks to Share'
               }
+              maxLength={TITLE_MAX}
               required
               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
             />
@@ -197,20 +206,26 @@ function AddListingPage() {
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-semibold text-gray-900 mb-2">
-              Description
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="description" className="block text-sm font-semibold text-gray-900">
+                Description
+              </label>
+              <span className={`text-xs ${description.length > DESC_MAX ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
+                {description.length}/{DESC_MAX}
+              </span>
+            </div>
             <textarea
               id="description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value.slice(0, DESC_MAX))}
               placeholder={
                 type === 'request'
                   ? "Describe what help you need. What can you offer in exchange?"
                   : "Describe what you're offering. What would you like in exchange?"
               }
+              maxLength={DESC_MAX}
               required
-              rows={5}
+              rows={4}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none transition-all"
             />
             <div className="mt-2 text-xs text-gray-500 flex items-start gap-1">

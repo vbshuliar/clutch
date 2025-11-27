@@ -6,14 +6,12 @@ export interface User {
   id: string
   email: string
   name: string
-  verified: boolean
-  createdAt: string
 }
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (email: string) => Promise<{ success: boolean; error?: string; devCode?: string }>
+  sendCode: (email: string) => Promise<{ success: boolean; error?: string; devCode?: string }>
   verifyCode: (email: string, code: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
   pendingEmail: string | null
@@ -29,25 +27,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check auth status on mount
   useEffect(() => {
-    checkAuth()
+    checkSession()
   }, [])
 
-  const checkAuth = async () => {
+  const checkSession = async () => {
     try {
-      const res = await fetch('/api/auth/me')
+      const res = await fetch('/api/auth/session')
       const data = await res.json()
       
-      if (data.success && data.user) {
+      if (data.user) {
         setUser(data.user)
       }
     } catch (error) {
-      console.error('Auth check failed:', error)
+      console.error('Session check failed:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const login = async (email: string): Promise<{ success: boolean; error?: string; devCode?: string }> => {
+  const sendCode = async (email: string): Promise<{ success: boolean; error?: string; devCode?: string }> => {
     try {
       const res = await fetch('/api/auth/send-code', {
         method: 'POST',
@@ -59,25 +57,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (data.success) {
         setPendingEmail(email.toLowerCase().trim())
-        
-        // If in dev mode, return the code for display
-        if (data.devMode && data.code) {
-          return { success: true, devCode: data.code }
+        return { 
+          success: true, 
+          devCode: data.devMode ? data.code : undefined 
         }
-        
-        return { success: true }
       }
 
       return { success: false, error: data.error || 'Failed to send code' }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('Send code error:', error)
       return { success: false, error: 'Network error. Please try again.' }
     }
   }
 
   const verifyCode = async (email: string, code: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const res = await fetch('/api/auth/verify', {
+      const res = await fetch('/api/auth/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
@@ -100,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/me', { method: 'DELETE' })
+      await fetch('/api/auth/session', { method: 'DELETE' })
     } catch (error) {
       console.error('Logout error:', error)
     }
@@ -109,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, verifyCode, logout, pendingEmail, setPendingEmail }}>
+    <AuthContext.Provider value={{ user, isLoading, sendCode, verifyCode, logout, pendingEmail, setPendingEmail }}>
       {children}
     </AuthContext.Provider>
   )

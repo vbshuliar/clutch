@@ -9,7 +9,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
-  const { login, user, isLoading, setPendingEmail } = useAuth()
+  const { sendCode, user, isLoading } = useAuth()
   const router = useRouter()
 
   // Redirect if already logged in
@@ -24,7 +24,7 @@ export default function Login() {
     setError('')
     setIsSubmitting(true)
 
-    const result = await login(email)
+    const result = await sendCode(email)
     
     if (result.success) {
       // If dev mode, show the code in an alert

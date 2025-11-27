@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { sendVerificationEmail } from '@/lib/email'
-
-function generateCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString()
-}
+import { generateCode, storeCode, sendVerificationEmail } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,6 +14,7 @@ export async function POST(request: NextRequest) {
 
     const emailLower = email.toLowerCase().trim()
 
+    // Validate Essex email
     if (!emailLower.endsWith('@essex.ac.uk')) {
       return NextResponse.json(
         { success: false, error: 'Please use your @essex.ac.uk email address' },
@@ -26,37 +22,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Generate and store code
     const code = generateCode()
-    const expiresAt = Date.now() + 10 * 60 * 1000 // 10 minutes
-
-    // Store code in a secure HTTP-only cookie (temporary storage)
-    const cookieStore = await cookies()
-    cookieStore.set('pendingVerification', JSON.stringify({
-      email: emailLower,
-      code,
-      expiresAt
-    }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 600, // 10 minutes
-    })
+    await storeCode(emailLower, code)
 
     // Send email
-    const emailResult = await sendVerificationEmail(emailLower, code)
-
-    if (emailResult.devMode) {
-      return NextResponse.json({
-        success: true,
-        message: 'Verification code sent',
-        devMode: true,
-        code: emailResult.code,
-      })
-    }
+    const result = await sendVerificationEmail(emailLower, code)
 
     return NextResponse.json({
       success: true,
-      message: 'Verification code sent to your email',
+      message: 'Verification code sent',
+      devMode: result.devMode,
+      ...(result.devMode ? { code } : {}),
     })
   } catch (error) {
     console.error('Send code error:', error)
