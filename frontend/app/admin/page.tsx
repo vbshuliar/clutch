@@ -33,13 +33,25 @@ export default function AdminPage() {
     description: '',
     category: 'skill',
     type: 'offer',
-    tags: '',
     userEmail: '',
     userName: '',
   })
+  const [tags, setTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+
+  const handleAddTag = () => {
+    if (tagInput.trim() && tags.length < 5) {
+      setTags([...tags, tagInput.trim()])
+      setTagInput('')
+    }
+  }
+
+  const handleRemoveTag = (index: number) => {
+    setTags(tags.filter((_, i) => i !== index))
+  }
 
   // Auto-generate name from email (use username part)
   const generateNameFromEmail = (email: string): string => {
@@ -106,7 +118,7 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newListing,
-          tags: newListing.tags.split(',').map(t => t.trim()).filter(Boolean),
+          tags,
         }),
       })
       const data = await res.json()
@@ -118,10 +130,11 @@ export default function AdminPage() {
           description: '',
           category: 'skill',
           type: 'offer',
-          tags: '',
           userEmail: '',
           userName: '',
         })
+        setTags([])
+        setTagInput('')
         fetchAllListings()
         setTimeout(() => setMessage(''), 2000)
       } else {
@@ -460,14 +473,52 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">Tags (comma-separated)</label>
-                <input
-                  type="text"
-                  value={newListing.tags}
-                  onChange={(e) => setNewListing({ ...newListing, tags: e.target.value })}
-                  placeholder="Math, Tutoring, Help"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
-                />
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Tags (optional, max 5)
+                </label>
+                <div className="flex gap-2 mb-3">
+                  <input
+                    type="text"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        handleAddTag()
+                      }
+                    }}
+                    placeholder="Add a tag..."
+                    disabled={tags.length >= 5}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTag}
+                    disabled={!tagInput.trim() || tags.length >= 5}
+                    className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 hover:scale-105 active:scale-95 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all"
+                  >
+                    Add
+                  </button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm"
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTag(index)}
+                          className="text-orange-500 hover:text-orange-700 hover:scale-125 active:scale-90 transition-all"
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <button
