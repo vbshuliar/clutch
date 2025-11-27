@@ -342,24 +342,25 @@ export default function AdminPage() {
         {activeTab === 'add' && (
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
             <form onSubmit={handleAddListing} className="space-y-5">
-              {/* User Info */}
-              <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl mb-6">
-                <p className="text-sm text-orange-800 font-medium">👤 Creating listing on behalf of a user</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">User Email *</label>
-                <input
-                  type="email"
-                  value={newListing.userEmail}
-                  onChange={(e) => handleEmailChange(e.target.value)}
-                  placeholder="user@essex.ac.uk"
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
-                />
-                {newListing.userName && (
-                  <p className="text-xs text-gray-500 mt-1">Username: {newListing.userName}</p>
-                )}
+              {/* User Email */}
+              <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl">
+                <div className="flex items-start gap-3">
+                  <span className="text-xl">📧</span>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-orange-900 text-sm mb-2">User's contact email</h3>
+                    <input
+                      type="email"
+                      value={newListing.userEmail}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      placeholder="user@essex.ac.uk"
+                      required
+                      className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all text-sm"
+                    />
+                    {newListing.userName && (
+                      <p className="text-orange-600 text-xs mt-1">Username: {newListing.userName}</p>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Type Selection */}
@@ -371,7 +372,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => setNewListing({ ...newListing, type: 'offer' })}
-                    className={`p-4 rounded-2xl border-2 transition-all active:scale-95 ${
+                    className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                       newListing.type === 'offer'
                         ? 'border-orange-500 bg-orange-50'
                         : 'border-gray-200 bg-white hover:border-orange-300'
@@ -386,7 +387,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => setNewListing({ ...newListing, type: 'request' })}
-                    className={`p-4 rounded-2xl border-2 transition-all active:scale-95 ${
+                    className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                       newListing.type === 'request'
                         ? 'border-rose-500 bg-rose-50'
                         : 'border-gray-200 bg-white hover:border-rose-300'
@@ -410,7 +411,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => setNewListing({ ...newListing, category: 'skill' })}
-                    className={`p-4 rounded-2xl border-2 transition-all active:scale-95 ${
+                    className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                       newListing.category === 'skill'
                         ? newListing.type === 'offer' ? 'border-orange-500 bg-orange-50' : 'border-rose-500 bg-rose-50'
                         : 'border-gray-200 bg-white hover:border-gray-300'
@@ -425,7 +426,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => setNewListing({ ...newListing, category: 'item' })}
-                    className={`p-4 rounded-2xl border-2 transition-all active:scale-95 ${
+                    className={`p-4 rounded-2xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${
                       newListing.category === 'item'
                         ? newListing.type === 'offer' ? 'border-amber-500 bg-amber-50' : 'border-rose-500 bg-rose-50'
                         : 'border-gray-200 bg-white hover:border-gray-300'
@@ -442,14 +443,22 @@ export default function AdminPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-semibold text-gray-900">Title *</label>
-                  <span className="text-xs text-gray-400">{newListing.title.length}/50</span>
+                  <label className="block text-sm font-semibold text-gray-900">Title</label>
+                  <span className={`text-xs ${newListing.title.length > 50 ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
+                    {newListing.title.length}/50
+                  </span>
                 </div>
                 <input
                   type="text"
                   value={newListing.title}
                   onChange={(e) => setNewListing({ ...newListing, title: e.target.value.slice(0, 50) })}
-                  placeholder="Listing title"
+                  placeholder={
+                    newListing.type === 'request'
+                      ? 'e.g., Need Math Tutoring Help'
+                      : newListing.category === 'skill'
+                      ? 'e.g., Math Tutoring Available'
+                      : 'e.g., Extra Textbooks to Share'
+                  }
                   required
                   maxLength={50}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
@@ -458,18 +467,28 @@ export default function AdminPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-semibold text-gray-900">Description *</label>
-                  <span className="text-xs text-gray-400">{newListing.description.length}/200</span>
+                  <label className="block text-sm font-semibold text-gray-900">Description</label>
+                  <span className={`text-xs ${newListing.description.length > 200 ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
+                    {newListing.description.length}/200
+                  </span>
                 </div>
                 <textarea
                   value={newListing.description}
                   onChange={(e) => setNewListing({ ...newListing, description: e.target.value.slice(0, 200) })}
-                  placeholder="Listing description"
+                  placeholder={
+                    newListing.type === 'request'
+                      ? "Describe what help you need. What can you offer in exchange?"
+                      : "Describe what you're offering. What would you like in exchange?"
+                  }
                   required
                   maxLength={200}
                   rows={4}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none transition-all"
                 />
+                <div className="mt-2 text-xs text-gray-500 flex items-start gap-1">
+                  <span>⚠️</span>
+                  <span>No assignment writing or cheating services allowed</span>
+                </div>
               </div>
 
               <div>
@@ -523,10 +542,20 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 active:scale-[0.98] active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-orange-500/30"
+                disabled={!newListing.title.trim() || !newListing.description.trim() || !newListing.userEmail.trim() || isSubmitting}
+                className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 hover:scale-[1.02] active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all shadow-lg shadow-orange-500/30 disabled:shadow-none"
               >
-                {isSubmitting ? 'Creating...' : 'Create Listing'}
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Creating...
+                  </span>
+                ) : (
+                  'Post Listing'
+                )}
               </button>
             </form>
           </div>
