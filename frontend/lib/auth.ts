@@ -56,8 +56,10 @@ export async function sendVerificationEmail(email: string, code: string): Promis
   }
 
   try {
+    // Use Resend's test domain until custom domain is verified
+    // Change to 'Clutch <noreply@clutch-skillshare.app>' once verified
     const { error } = await resend.emails.send({
-      from: 'Clutch <noreply@clutch-skillshare.app>',
+      from: 'Clutch <onboarding@resend.dev>',
       to: email,
       subject: 'Your Clutch verification code',
       html: `
