@@ -23,7 +23,6 @@ function OffersPage() {
   const [listings, setListings] = useState<Listing[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [copiedId, setCopiedId] = useState<string | null>(null)
   const { toggleSave, isSaved } = useSaved()
 
   const fetchListings = useCallback(async () => {
@@ -86,13 +85,32 @@ function OffersPage() {
       listing.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     )
 
-  const copyEmail = async (listing: Listing) => {
-    try {
-      await navigator.clipboard.writeText(listing.userEmail)
-      setCopiedId(listing.id)
-      setTimeout(() => setCopiedId(null), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
+  const openEmail = (listing: Listing) => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    const listingType = listing.type === 'offer' ? 'Offer' : 'Request'
+    const categoryLabel = getCategoryLabel(listing.category)
+    
+    const subject = encodeURIComponent(`Interested in your ${listing.title} on Clutch`)
+    const body = encodeURIComponent(
+      `Hi ${listing.userName}! 👋\n\n` +
+      `I came across your ${listingType.toLowerCase()} on Clutch and I'm really interested!\n\n` +
+      `Here's what caught my attention:\n` +
+      `• ${listing.title}\n` +
+      `• ${listing.description}\n\n` +
+      `I'd love to connect and chat more about this. Would you be available to discuss further?\n\n` +
+      `Looking forward to hearing from you!\n\n` +
+      `Best wishes,\n\n` +
+      `---\n` +
+      `Sent via Clutch - Essex University's skill sharing platform`
+    )
+    
+    if (isMobile) {
+      // Mobile: Use mailto: which will open Outlook app if installed
+      window.location.href = `mailto:${listing.userEmail}?subject=${subject}&body=${body}`
+    } else {
+      // Desktop: Open Outlook web compose
+      const outlookUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(listing.userEmail)}&subject=${subject}&body=${body}`
+      window.open(outlookUrl, '_blank')
     }
   }
 
@@ -198,14 +216,10 @@ function OffersPage() {
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <span className="text-sm text-gray-400">{listing.userEmail}</span>
                       <button
-                        onClick={() => copyEmail(listing)}
-                        className={`py-2 px-4 rounded-xl text-sm font-medium transition-all shadow-sm active:scale-95 ${
-                          copiedId === listing.id
-                            ? 'bg-green-500 text-white shadow-green-500/20'
-                            : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 active:shadow-md shadow-orange-500/20'
-                        }`}
+                        onClick={() => openEmail(listing)}
+                        className="py-2 px-4 rounded-xl text-sm font-medium transition-all shadow-sm active:scale-95 bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 active:shadow-md shadow-orange-500/20"
                       >
-                        {copiedId === listing.id ? '✓ Copied!' : 'Copy Email'}
+                        Email
                       </button>
                     </div>
                   </div>
